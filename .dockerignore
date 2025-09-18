@@ -1,0 +1,11 @@
+﻿node_modules
+npm-debug.log
+Dockerfile*
+.git
+.gitignore
+dist
+coverage
+.eslintcache
+
+# Keep Prisma schema but ignore generated
+/generated
