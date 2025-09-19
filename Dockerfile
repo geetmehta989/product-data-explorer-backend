@@ -1,22 +1,11 @@
-﻿# syntax=docker/dockerfile:1
-FROM node:22-alpine AS base
+FROM node:20-alpine
 WORKDIR /app
-
-FROM base AS deps
 COPY package*.json ./
-RUN npm ci --omit=dev
-
-FROM base AS builder
-COPY package*.json ./
-RUN npm ci
+RUN npm ci --only=production
 COPY . .
+RUN npx prisma generate
 RUN npm run build
-
-FROM base AS runner
-ENV NODE_ENV=production
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-COPY prisma ./prisma
 EXPOSE 3000
+ENV NODE_ENV=production
+ENV PORT=3000
 CMD ["node", "dist/main.js"]
