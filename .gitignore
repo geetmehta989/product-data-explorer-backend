@@ -1,3 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+
+# SQLite data
+data/*.db
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
 node_modules
 # Keep environment variables out of version control
 .env
