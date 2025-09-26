@@ -1,3 +1,62 @@
+## FastAPI + LangChain SQL Agent Backend
+
+This backend exposes a single endpoint `/ask` that accepts a natural language question, generates a SQL query (robust to dirty schema/table/column names), executes it against a local SQLite database, and returns:
+
+- Natural language explanation of the results
+- Cleaned tabular data
+- Suggested chart type (bar, line, pie, scatter, table)
+
+### Setup
+
+1. Create and activate a Python 3.10+ virtual environment.
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Set your OpenAI API key in the environment:
+
+```bash
+export OPENAI_API_KEY=sk-...yourkey...
+```
+
+Optionally, create a `.env` file with `OPENAI_API_KEY` for local dev.
+
+### Run
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+The server will initialize a local SQLite database with a deliberately "dirty" schema at `data/dirty.db` on first run.
+
+### Endpoint
+
+POST `/ask`
+
+Request body:
+
+```json
+{ "question": "What are the top states by total order amount this year?" }
+```
+
+Response body:
+
+```json
+{
+  "sql": "SELECT ...",
+  "columns": ["state", "total_amount"],
+  "data": [{"state": "CA", "total_amount": 1234.56}],
+  "explanation": "California leads...",
+  "chart": "bar"
+}
+```
+
+### Notes
+
+- Only `SELECT` queries are executed. The system will automatically add `LIMIT` where appropriate and quote identifiers with special characters.
+- Chart type is heuristically suggested based on returned columns and value distributions.
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
